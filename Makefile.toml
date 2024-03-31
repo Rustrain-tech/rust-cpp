@@ -1,0 +1,12 @@
+[tasks.mybuild]
+command = "cargo"
+args = ["build", "--release"]
+
+[tasks.myrun]
+command = "./target/release/rust-cpp"
+
+[tasks.myflow]
+dependencies = ["mybuild", "myrun"]
+
+[tasks.default]
+alias = "myflow"
