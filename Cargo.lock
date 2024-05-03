@@ -203,6 +203,7 @@ dependencies = [
  "num",
  "proconio",
  "rand",
+ "rand_chacha",
 ]
 
 [[package]]
