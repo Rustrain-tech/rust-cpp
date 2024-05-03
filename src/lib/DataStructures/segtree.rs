@@ -15,48 +15,48 @@ struct Data {
 }
 
 trait Monoid {
-    type M: Clone;
-    fn identity() -> Self::M;
-    fn op(a: &Self::M, other: &Self::M) -> Self::M;
+    type S: Clone;
+    fn identity() -> Self::S;
+    fn op(a: &Self::S, other: &Self::S) -> Self::S;
 }
 
 impl Monoid for Data {
-    type M = Data;
-    fn identity() -> Self::M {
+    type S = Data;
+    fn identity() -> Self::S {
         Data { max: 0 }
     }
-    fn op(a: &Self::M, other: &Self::M) -> Self::M {
+    fn op(a: &Self::S, other: &Self::S) -> Self::S {
         Data {
             max: std::cmp::max(a.max, other.max),
         }
     }
 }
 
-struct SegTree<T: Monoid> {
+struct SegTree<M: Monoid> {
     n: usize,
-    data: Vec<T::M>,
+    data: Vec<M::S>,
 }
 
-impl<T: Monoid> SegTree<T> {
+impl<M: Monoid> SegTree<M> {
     fn new(n: usize) -> Self {
         let n_ = n.next_power_of_two();
         SegTree {
             n: n_,
-            data: vec![T::identity(); 2 * n_ + 1],
+            data: vec![M::identity(); 2 * n_ + 1],
         }
     }
 
     /// update i-th element (0-indexed)
-    fn update(&mut self, mut i: usize, x: T::M) {
+    fn update(&mut self, mut i: usize, x: M::S) {
         i += self.n;
         self.data[i] = x;
         while i > 1 {
             i /= 2;
-            self.data[i] = T::op(&self.data[i * 2], &self.data[i * 2 + 1]);
+            self.data[i] = M::op(&self.data[i * 2], &self.data[i * 2 + 1]);
         }
     }
 
-    fn query<R>(&self, range: R) -> T::M
+    fn query<R>(&self, range: R) -> M::S
     where
         R: std::ops::RangeBounds<usize>,
     {
@@ -76,16 +76,16 @@ impl<T: Monoid> SegTree<T> {
             }
         };
 
-        let mut res = T::identity();
+        let mut res = M::identity();
 
         while l < r {
             if l & 1 == 1 {
-                res = T::op(&res, &self.data[l]);
+                res = M::op(&res, &self.data[l]);
                 l += 1;
             }
             if r & 1 == 1 {
                 r -= 1;
-                res = T::op(&res, &self.data[r]);
+                res = M::op(&res, &self.data[r]);
             }
             l /= 2;
             r /= 2;
