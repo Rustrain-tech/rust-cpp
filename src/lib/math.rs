@@ -37,6 +37,27 @@ pub fn pow<T: traits::PrimInt>(mut a: T, mut b: T) -> T {
     ret
 }
 
+/// Returns a^b mod m.
+pub fn pow_mod<T: traits::PrimInt>(mut a: T, mut b: T, m: T) -> T {
+    let mut ret = T::one();
+    a = a % m;
+    while b > T::zero() {
+        if b & T::one() == T::one() {
+            ret = (ret * a) % m;
+        }
+        a = (a * a) % m;
+        b = b >> 1;
+    }
+    ret
+}
+
+/// Returns the modular inverse of a mod m.
+/// The result x satisfies 0 <= x < m and a * x ≡ 1 (mod m).
+pub fn inv_mod<T: traits::PrimInt>(a: T, m: T) -> T {
+    let (_, x, _) = extgcd(a, m);
+    (x % m + m) % m
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
