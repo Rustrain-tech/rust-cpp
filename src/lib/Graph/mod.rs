@@ -1,2 +1,2 @@
+pub mod base;
 pub mod dijkstra;
-pub mod graph;

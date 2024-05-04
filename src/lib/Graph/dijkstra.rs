@@ -1,5 +1,5 @@
-use crate::lib::Graph::graph::Edge;
-use crate::lib::Graph::graph::Graph;
+use crate::lib::Graph::base::Edge;
+use crate::lib::Graph::base::Graph;
 use std::cmp::Reverse;
 use std::collections::BinaryHeap;
 
